@@ -3,6 +3,10 @@
 import { redirect } from 'next/navigation';
 import { saveMeal } from './meals';
 
+function isInvalidText(text: string) {
+  return !text || text.trim() === '';
+}
+
 export async function shareMeal(formData: FormData) {
   const meal = {
     title: formData.get('title') as string,
@@ -14,12 +18,14 @@ export async function shareMeal(formData: FormData) {
   };
 
   if (
-    !meal.title ||
-    !meal.summary ||
-    !meal.instructions ||
+    isInvalidText(meal.title) ||
+    isInvalidText(meal.summary) ||
+    isInvalidText(meal.instructions) ||
+    isInvalidText(meal.creator) ||
+    isInvalidText(meal.creator_email) ||
+    !meal.creator_email.includes('@') ||
     !meal.image ||
-    !meal.creator ||
-    !meal.creator_email
+    meal.image.size === 0
   ) {
     throw new Error('Missing required fields');
   }
