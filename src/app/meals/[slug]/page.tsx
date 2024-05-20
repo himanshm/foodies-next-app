@@ -2,6 +2,7 @@ import Image from 'next/image';
 import styles from './page.module.css';
 import { getMeal } from '@/lib/meals';
 import { notFound } from 'next/navigation';
+import { title } from 'process';
 
 interface Meal {
   title: string;
@@ -11,6 +12,23 @@ interface Meal {
   instructions: string;
   creator: string;
   creator_email: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const meal: Meal = getMeal(params.slug) as Meal;
+
+  if (!meal) {
+    notFound();
+  }
+
+  return {
+    title: meal.title,
+    description: meal.summary,
+  };
 }
 
 function MealDetailsPage({ params }: { params: { slug: string } }) {
